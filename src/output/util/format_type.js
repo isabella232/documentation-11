@@ -149,9 +149,9 @@ function formatType(getHref: Function, node: ?Object): Array<Object> {
       if (node.params.length === 1 && !node['this']) {
         const param = node.params[0];
         const paramIsFunctionOrNamed =
-          param.type === Syntax.ParameterType &&
-          (param.expression.type === Syntax.FunctionType ||
-            param.expression.name);
+          (param.type === Syntax.ParameterType &&
+            (param.expression.type === Syntax.FunctionType || param.name)) ||
+          param.type === Syntax.FunctionType;
 
         if (paramIsFunctionOrNamed) {
           result.push(t('('));

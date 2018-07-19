@@ -70,6 +70,10 @@ test('formatType', function() {
     ['function(a:b)', '(a: b) => void'],
     ['function(a):void', 'a => void'],
     [
+      'function(function(b):c):function(function(a):b):function(a):c',
+      '(b => c) => (a => b) => a => c'
+    ],
+    [
       'number=',
       '[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?'
     ],
