@@ -144,29 +144,54 @@ function formatType(getHref: Function, node: ?Object): Array<Object> {
       return [t(node.key)];
 
     case Syntax.FunctionType:
-      result = [t('function (')];
+      result = [];
 
-      if (node['this']) {
-        if (node['new']) {
-          result.push(t('new: '));
-        } else {
-          result.push(t('this: '));
+      if (node.params.length === 1 && !node['this']) {
+        const param = node.params[0];
+        const paramIsFunctionOrNamed =
+          param.type === Syntax.ParameterType &&
+          (param.expression.type === Syntax.FunctionType ||
+            param.expression.name);
+
+        if (paramIsFunctionOrNamed) {
+          result.push(t('('));
         }
 
-        result = result.concat(formatType(getHref, node['this']));
+        result = result.concat(formatType(getHref, node.params[0]));
 
-        if (node.params.length !== 0) {
-          result.push(t(', '));
+        if (paramIsFunctionOrNamed) {
+          result.push(t(')'));
         }
+      } else {
+        result.push(t('('));
+
+        if (node['this']) {
+          if (node['new']) {
+            result.push(t('new: '));
+          } else {
+            result.push(t('this: '));
+          }
+
+          result = result.concat(formatType(getHref, node['this']));
+
+          if (node.params.length !== 0) {
+            result.push(t(', '));
+          }
+        }
+
+        result = result.concat(commaList(getHref, node.params, '', ''));
+
+        result.push(t(')'));
       }
 
-      result = result.concat(commaList(getHref, node.params, '', ')'));
+      result.push(t(' => '));
 
       if (node.result) {
-        result = result.concat(
-          [t(': ')].concat(formatType(getHref, node.result))
-        );
+        result = result.concat(formatType(getHref, node.result));
+      } else {
+        result.push(t('void'));
       }
+
       return result;
 
     case Syntax.RestType:

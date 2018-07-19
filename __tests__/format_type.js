@@ -37,18 +37,18 @@ test('formatType', function() {
     ["'pre'|'post'", '(`"pre"` \\| `"post"`)'],
     [
       'function(string, boolean)',
-      'function ([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean))'
+      '([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)) => void'
     ],
     [
       'function(string, boolean): number',
-      'function ([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)): [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)'
+      '([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)) => [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)'
     ],
-    ['function()', 'function ()'],
+    ['function()', '() => void'],
     [
       'function(this:something, string)',
-      'function (this: something, [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))'
+      '(this: something, [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)) => void'
     ],
-    ['function(new:something)', 'function (new: something)'],
+    ['function(new:something)', '(new: something) => void'],
     [
       '{myNum: number, myObject}',
       '{myNum: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number), myObject}'
@@ -67,8 +67,8 @@ test('formatType', function() {
     ],
     ['?', '?'],
     ['void', 'void'],
-    ['function(a:b)', 'function (a: b)'],
-    ['function(a):void', 'function (a): void'],
+    ['function(a:b)', '(a: b) => void'],
+    ['function(a):void', 'a => void'],
     [
       'number=',
       '[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?'
