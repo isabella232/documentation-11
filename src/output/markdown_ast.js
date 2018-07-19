@@ -110,6 +110,26 @@ function buildMarkdownAST(
       );
     }
 
+    function functionType(comment: Comment) {
+      if (!comment.params.length && !comment.returns.length) {
+        return [];
+      }
+
+      return [
+        u('paragraph', [
+          u('text', comment.name + ': '),
+          u(
+            'strong',
+            formatType({
+              type: 'FunctionType',
+              params: comment.params.map(param => param.type),
+              result: comment.returns.map(ret => ret.type)[0]
+            })
+          )
+        ])
+      ];
+    }
+
     function paramSection(comment: Comment) {
       return (
         comment.params.length > 0 && [
@@ -317,47 +337,50 @@ function buildMarkdownAST(
         .filter(Boolean);
     }
 
-    return [u('heading', { depth }, [u('text', comment.name || '')])]
-      .concat(githubLink(comment))
-      .concat(augmentsLink(comment))
-      .concat(seeLink(comment))
-      .concat(comment.description ? comment.description.children : [])
-      .concat(typeSection(comment))
-      .concat(paramSection(comment))
-      .concat(propertySection(comment))
-      .concat(examplesSection(comment))
-      .concat(throwsSection(comment))
-      .concat(returnsSection(comment))
-      .concat(metaSection(comment))
-      .concat(
-        !!comment.members.global.length &&
-          comment.members.global.reduce(
-            (memo, child) => memo.concat(generate(depth + 1, child)),
-            []
-          )
-      )
-      .concat(
-        !!comment.members.instance.length &&
-          comment.members.instance.reduce(
-            (memo, child) => memo.concat(generate(depth + 1, child)),
-            []
-          )
-      )
-      .concat(
-        !!comment.members.static.length &&
-          comment.members.static.reduce(
-            (memo, child) => memo.concat(generate(depth + 1, child)),
-            []
-          )
-      )
-      .concat(
-        !!comment.members.inner.length &&
-          comment.members.inner.reduce(
-            (memo, child) => memo.concat(generate(depth + 1, child)),
-            []
-          )
-      )
-      .filter(Boolean);
+    return (
+      [u('heading', { depth }, [u('text', comment.name || '')])]
+        .concat(githubLink(comment))
+        .concat(augmentsLink(comment))
+        .concat(seeLink(comment))
+        .concat(functionType(comment))
+        .concat(comment.description ? comment.description.children : [])
+        .concat(typeSection(comment))
+        // .concat(paramSection(comment))
+        .concat(propertySection(comment))
+        .concat(examplesSection(comment))
+        .concat(throwsSection(comment))
+        // .concat(returnsSection(comment))
+        .concat(metaSection(comment))
+        .concat(
+          !!comment.members.global.length &&
+            comment.members.global.reduce(
+              (memo, child) => memo.concat(generate(depth + 1, child)),
+              []
+            )
+        )
+        .concat(
+          !!comment.members.instance.length &&
+            comment.members.instance.reduce(
+              (memo, child) => memo.concat(generate(depth + 1, child)),
+              []
+            )
+        )
+        .concat(
+          !!comment.members.static.length &&
+            comment.members.static.reduce(
+              (memo, child) => memo.concat(generate(depth + 1, child)),
+              []
+            )
+        )
+        .concat(
+          !!comment.members.inner.length &&
+            comment.members.inner.reduce(
+              (memo, child) => memo.concat(generate(depth + 1, child)),
+              []
+            )
+        )
+        .filter(Boolean)
+    );
   }
 
   let root = rerouteLinks(
